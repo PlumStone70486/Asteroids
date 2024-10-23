@@ -6,6 +6,7 @@ from shot import *
 
 
 class Player(CircleShape, pygame.sprite.Sprite):
+    timer = 0
     def __init__(self, x, y, shots_group):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
@@ -56,8 +57,12 @@ class Player(CircleShape, pygame.sprite.Sprite):
             self.move(dt, 1)
         if keys[pygame.K_s]:
             self.move(dt, -1)
-        if keys[pygame.K_SPACE]:
+
+        self.timer = max(0, self.timer - dt)
+
+        if keys[pygame.K_SPACE] and self.timer == 0:
             self.shoot(dt)
+            self.timer = PLAYER_SHOOT_COOLDOWN
             
         self.position.x %= SCREEN_WIDTH
         self.position.y %= SCREEN_HEIGHT

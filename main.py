@@ -37,6 +37,8 @@ def main():
 		drawable.draw(screen)
 		pygame.display.flip()
 
+		collisions = pygame.sprite.groupcollide(asteroid_group, shots_group, True, True)
+
 		for asteroid in asteroid_group:
 			if player.collide(asteroid):
 				print("Game over")
