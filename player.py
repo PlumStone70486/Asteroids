@@ -2,13 +2,16 @@ import pygame
 from circleshape import *
 from constants import *
 from main import *
+from shot import *
+
 
 class Player(CircleShape, pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, shots_group):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
         self.image = pygame.Surface((PLAYER_RADIUS * 2, PLAYER_RADIUS * 2), pygame.SRCALPHA)
         self.rect = self.image.get_rect(center=(x, y))
+        self.shots_group = shots_group
         self.update_image()
 
     def triangle(self):
@@ -36,6 +39,11 @@ class Player(CircleShape, pygame.sprite.Sprite):
         self.position += forward * PLAYER_SPEED * dt * direction
         self.rect.center = self.position
         self.update_image()
+
+    def shoot(self, dt):
+        start_position = (self.position.x, self.position.y)
+        new_shot = Shot(start_position[0], start_position[1], self.rotation, PLAYER_SHOOT_SPEED)
+        self.shots_group.add(new_shot)
     
     def update(self, dt):
         keys = pygame.key.get_pressed()
@@ -48,6 +56,8 @@ class Player(CircleShape, pygame.sprite.Sprite):
             self.move(dt, 1)
         if keys[pygame.K_s]:
             self.move(dt, -1)
+        if keys[pygame.K_SPACE]:
+            self.shoot(dt)
             
         self.position.x %= SCREEN_WIDTH
         self.position.y %= SCREEN_HEIGHT
